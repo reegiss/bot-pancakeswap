@@ -2,13 +2,16 @@
 import Web3 from 'web3';
 import pancakeSwapAbi from "./pancakeSwapAbi.js";
 import tokenAbi from "./tokenAbi.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 let pancakeSwapContract = "0x10ED43C718714eb63d5aA57B78B54704E256024E".toLowerCase();
 
-
-const web3 = new Web3("https://bsc-dataseed1.binance.org");
+const url = process.env.URL_WEB3;
+const web3 = new Web3(url);
 export async function calcSell(tokensToSell, tokenAddres) {
-    const web3 = new Web3("https://bsc-dataseed1.binance.org");
+
     const BNBTokenAddress = "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" //BNB
 
     let tokenRouter = await new web3.eth.Contract(tokenAbi, tokenAddres);
