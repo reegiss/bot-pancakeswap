@@ -2,6 +2,7 @@ import ethers from 'ethers';
 import express from 'express';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
+import inquirer from 'inquirer';
 import { calcBNBPrice, calcSell } from "./tokenPrice.js";
 
 
@@ -87,11 +88,10 @@ const daiAbi = [
 const targetContract = new ethers.Contract(daiAddress, daiAbi, provider);
 
 const run = async () => {
-  let t = await tokenInfp();
   await checkLiq();
 }
 
-let tokenInfp = async () => {
+let tokenInfo = async () => {
   try {
     const bnbPrice = await calcBNBPrice();
     const priceInBnb = await calcSell(1, data.to_PURCHASE) / 1;
@@ -141,7 +141,7 @@ let checkLiq = async () => {
   console.log(`BNB pooled: ${jmlBnb}`);
 
   if (jmlBnb > data.minBnb) {
-    setTimeout(() => buyAction(), 3000);
+    setTimeout(() => buyAction(), 5000);
   }
   else {
     initialLiquidityDetected = false;
@@ -159,8 +159,6 @@ let buyAction = async () => {
   console.log('ready to buy');
 
   try {
-    // let tokenInfo = await tokenInfp();
-    // console.log(tokenInfo);
 
     initialLiquidityDetected = true;
 
@@ -206,8 +204,9 @@ let buyAction = async () => {
 
     const receipt = await tx.wait();
     console.log(`Transaction receipt : https://www.bscscan.com/tx/${receipt.logs[1].transactionHash}`);
+    let tokenInfo = await tokenInfo();
     setTimeout(() => { process.exit() }, 2000);
-    let tokenInfo = await tokenInfp();
+
   } catch (err) {
     let error = JSON.parse(JSON.stringify(err));
     console.log(`Error caused by : 
@@ -241,6 +240,8 @@ let buyAction = async () => {
   }
 }
 
+tokenInfo();
+// firstRun();
 run();
 
 // const PORT = 5001;
